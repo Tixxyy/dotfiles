@@ -4,19 +4,26 @@ call plug#begin()
     Plug 'jiangmiao/auto-pairs'	
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
 
 	Plug 'vim-scripts/DoxygenToolkit.vim'
 	Plug 'chemzqm/vim-jsx-improve'
 	Plug 'christoomey/vim-tmux-navigator'
-
+	Plug 'Shougo/neosnippet.vim'
+	Plug 'Shougo/neosnippet-snippets'
 
 	"Looks
     Plug 'bling/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
 
 	Plug 'altercation/vim-colors-solarized'	
-	Plug 'fcpg/vim-fahrenheit'
+	Plug 'drewtempelmeyer/palenight.vim'
+		
 call plug#end()
+
+"NERDtree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 "Some bs that might help with airline performance
 if ! has('gui_running')
@@ -28,22 +35,26 @@ if ! has('gui_running')
     augroup END
 endif
 
+if (has("nvim"))
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+if (has("termguicolors"))
+  set termguicolors
+endif
+
 set nocompatible
 filetype plugin indent on
 syntax enable 
 
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
 "Colors
 set background=dark
 let g:solarized_termcolors=256
-"colorscheme fahrenheit
-let g:airline_theme='dark'
+colorscheme palenight
+let g:palenight_terminal_italics=1
+
+let g:airline_theme = "palenight"
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 
 set number
 set rnu
@@ -92,8 +103,12 @@ set signcolumn=yes
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
+	  \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+let g:coc_snippet_next = '<tab>'
+imap <C-l> <Plug>(coc-snippets-expand)
 
 function! s:check_back_space() abort
   let col = col('.') - 1
