@@ -22,6 +22,23 @@ call plug#begin()
 		
 call plug#end()
 
+"Compiling for various languages
+function! Cpp()
+    nnoremap <F5> :w!<Enter> :!g++ -o __targetFile *.cpp -I ../include/ -O3 && ./__targetFile && rm __targetFile <Enter>
+endfunc
+autocmd FileType cpp call Cpp()
+
+function! C()
+    nnoremap <F5> :w!<Enter> :!gcc -Wall -std=c11 -pedantic % -o __temp -lm && ./__temp && rm __temp <Enter>
+endfunc
+autocmd FileType c call C()
+
+function! Js()
+    nnoremap <F5> :wa!<Enter> :!node % <Enter>
+endfunc
+
+autocmd Filetype javascript call Js()
+
 "NERDtree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
@@ -59,6 +76,8 @@ let g:airline_theme = "palenight"
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
+let g:load_doxygen_syntax=1
+
 set number
 set rnu
 
@@ -72,11 +91,11 @@ set splitright
 
 " Spaces & Tabs {{{
 set tabstop=4       " number of visual spaces per TAB
-"set softtabstop=4   " number of spaces in tab when editing
+set softtabstop=4   " number of spaces in tab when editing
 set shiftwidth=4    " number of spaces to use for autoindent
-"set expandtab       " tabs are space
-set autoindent
-set copyindent      " copy indent from the previous line
+set expandtab       " tabs are space
+"set autoindent
+"set copyindent      " copy indent from the previous line
 " }}} Spaces & Tabs
 "
 tnoremap <Esc> <C-\><C-n>
@@ -103,21 +122,18 @@ set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-	  \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ coc#refresh()
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+imap <silent><expr> <TAB>
+      \ neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" :
+	  \ pumvisible() ? "\<C-n>" : "\<TAB>"
+
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-let g:coc_snippet_next = '<tab>'
 imap <C-l> <Plug>(coc-snippets-expand)
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
 

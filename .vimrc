@@ -10,7 +10,6 @@ set hls is
 set autoindent 
 set nu
 syntax on
-colorscheme Test
 set completeopt=longest,menuone
 
 
@@ -23,12 +22,12 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin()
-Plug 'Valloric/YouCompleteMe', {'do':'python3 install.py --clang-completer --java-completer','for':['cpp','java','c']}
-Plug 'davidhalter/jedi-vim', {'for':['python']}
-Plug 'ervandew/supertab', {'for':['python']}
+"Plug 'Valloric/YouCompleteMe', {'do':'python3 install.py --clang-completer --java-completer','for':['cpp','java','c']}
+"Plug 'davidhalter/jedi-vim', {'for':['python']}
+"Plug 'ervandew/supertab', {'for':['python']}
 Plug 'tpope/vim-surround'
-Plug 'sirver/UltiSnips'
-Plug 'honza/vim-snippets'
+"Plug 'sirver/UltiSnips'
+"Plug 'honza/vim-snippets'
 call plug#end()
 
 function! CppSettings()
